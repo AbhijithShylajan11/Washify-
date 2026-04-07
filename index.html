@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Washify | Smart Laundry Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: #0f172a;
+            --glass: rgba(30, 41, 59, 0.7);
+            --neon: #22d3ee;
+            --neon-glow: rgba(34, 211, 238, 0.3);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --safe: #10b981;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+
+        /* --- Amazon-style Header --- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            background: var(--bg);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        #back-btn {
+            font-size: 1.2rem;
+            margin-right: 15px;
+            cursor: pointer;
+            display: none; /* Hidden on Home */
+        }
+
+        .logo { font-weight: 800; font-size: 1.2rem; flex-grow: 1; }
+        .logo span { color: var(--neon); }
+
+        /* --- Bottom Navigation (Mobile App Style) --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--surface);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 2000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            text-decoration: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item.active { color: var(--neon); }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 4px; }
+
+        /* --- Page Wrapper --- */
+        .page {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Components --- */
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 15px;
+            background: var(--neon);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* --- Login Styles --- */
+        .input-group { margin-bottom: 15px; }
+        input, select {
+            width: 100%;
+            padding: 14px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: white;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        /* --- How it Works Visual --- */
+        .step-row { display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start; }
+        .step-num { 
+            width: 30px; height: 30px; border-radius: 50%; 
+            background: var(--neon); color: #000; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 800; flex-shrink: 0;
+        }
+
+        .code-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: 8px;
+            color: var(--neon);
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <i class="fas fa-chevron-left" id="back-btn" onclick="goBack()"></i>
+        <div class="logo" onclick="navigateTo('home')">WASH<span>IFY</span></div>
+        <i class="fas fa-user-circle" style="font-size: 1.5rem;" onclick="navigateTo('login')"></i>
+    </header>
+
+    <main>
+        <section id="page-home" class="page active">
+            <h1 style="font-size: 2.2rem; margin: 20px 0 10px;">Smart Laundry <br>Simplified.</h1>
+            <p style="color: var(--text-dim); margin-bottom: 25px;">The ultimate IoT companion for hostel living.</p>
+            
+            <div class="glass-card" onclick="navigateTo('dashboard')">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3>Quick Book</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-dim);">Reserve a machine in seconds.</p>
+                    </div>
+                    <i class="fas fa-arrow-right" style="color: var(--neon);"></i>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h3>Live System Health</h3>
+                <div style="height: 6px; width: 100%; background: #334155; border-radius: 3px; margin: 15px 0;">
+                    <div style="width: 85%; height: 100%; background: var(--neon); border-radius: 3px;"></div>
+                </div>
+                <p style="font-size: 0.8rem;">Water Level: <span style="color: var(--safe);">Excellent (85%)</span></p>
+            </div>
+        </section>
+
+        <section id="page-dashboard" class="page">
+            <h2>Reserve a Slot</h2>
+            <p style="color: var(--text-dim); margin-bottom: 20px;">Available in Kattakada Hostel</p>
+            
+            <div class="glass-card">
+                <label style="font-size: 0.8rem; font-weight: 600;">Select Machine</label>
+                <select id="machine-id">
+                    <option>Machine 01 (Front Load)</option>
+                    <option>Machine 02 (Top Load)</option>
+                </select>
+                
+                <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-top: 15px;">Pick Time</label>
+                <input type="time" id="book-time">
+                
+                <button class="btn-full" onclick="handleBooking()">Confirm Reservation</button>
+            </div>
+
+            <div id="booking-result" class="glass-card" style="display: none; border-color: var(--neon);">
+                <p style="text-align: center; font-size: 0.7rem; letter-spacing: 1px;">YOUR ACTIVATION CODE</p>
+                <div class="code-display" id="access-code">----</div>
+                <p style="text-align: center; font-size: 0.8rem; color: var(--text-dim);">Enter this on the machine keypad.</p>
+            </div>
+        </section>
+
+        <section id="page-about" class="page">
+            <h2>About Washify</h2>
+            <div class="glass-card" style="margin-top: 20px;">
+                <p><strong>The Problem:</strong> Laundry in hostels is often chaotic, with long wait times and machine conflicts.</p>
+                <br>
+                <p><strong>The Solution:</strong> An IoT ecosystem using ESP32 controllers to lock/unlock machines based on digital reservations.</p>
+            </div>
+            <h3>How it Works</h3>
+            <div style="margin-top: 20px;">
+                <div class="step-row">
+                    <div class="step-num">1</div>
+                    <p><strong>Book:</strong> Select a time on this app.</p>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">2</div>
+                    <p><strong>Verify:</strong> Receive your 4-digit code.</p>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">3</div>
+                    <p><strong>Wash:</strong> Enter code on machine to start.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-login" class="page">
+            <h2 style="text-align: center;">Portal Login</h2>
+            <div class="glass-card" style="margin-top: 20px;">
+                <div class="input-group">
+                    <input type="text" id="user-name" placeholder="Username">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="hostel-name" placeholder="Hostel Name">
+                </div>
+                <button class="btn-full" onclick="navigateTo('dashboard')">Sign In</button>
+            </div>
+        </section>
+    </main>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="navigateTo('home')" id="nav-home">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('dashboard')" id="nav-dash">
+            <i class="fas fa-plus-square"></i>
+            <span>Book</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('about')" id="nav-about">
+            <i class="fas fa-info-circle"></i>
+            <span>About</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('login')" id="nav-user">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </div>
+    </div>
+
+    <script>
+        // --- Navigation History System ---
+        let pageHistory = ['home'];
+
+        function navigateTo(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Show target
+            const target = document.getElementById('page-' + pageId);
+            if(target) {
+                target.classList.add('active');
+                if(pageHistory[pageHistory.length - 1] !== pageId) {
+                    pageHistory.push(pageId);
+                }
+            }
+
+            // Update Header (Show back button if not on home)
+            const backBtn = document.getElementById('back-btn');
+            backBtn.style.display = pageId === 'home' ? 'none' : 'block';
+
+            // Update Bottom Nav UI
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            const activeNav = document.getElementById('nav-' + (pageId === 'home' ? 'home' : (pageId === 'dashboard' ? 'dash' : (pageId === 'about' ? 'about' : 'user'))));
+            if(activeNav) activeNav.classList.add('active');
+
+            window.scrollTo(0, 0);
+        }
+
+        function goBack() {
+            if(pageHistory.length > 1) {
+                pageHistory.pop(); // Remove current
+                const prevPage = pageHistory[pageHistory.length - 1];
+                navigateTo(prevPage);
+            }
+        }
+
+        // --- Booking Logic ---
+        function handleBooking() {
+            const time = document.getElementById('book-time').value;
+            if(!time) {
+                alert("Please select a time first.");
+                return;
+            }
+
+            // Simulate code generation
+            const code = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('access-code').innerText = code;
+            document.getElementById('booking-result').style.display = 'block';
+            
+            // Scroll to code
+            document.getElementById('booking-result').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Handle Browser Physical Back Button
+        window.onpopstate = function() {
+            goBack();
+        };
+    </script>
+</body>
+</html>
